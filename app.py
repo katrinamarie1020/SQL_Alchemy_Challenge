@@ -65,8 +65,6 @@ def station():
     # Create our session (link) from Python to the DB
     session = Session(engine)
 
-    """Return a list of passenger data including the name, age, and sex of each passenger"""
-    # Query all passengers
     results = session.query(Station.station).all()
 
     session.close()
@@ -94,6 +92,19 @@ def tobs():
 
 
 @app.route("/api/v1.0/<start>")
+
+def temps1(start):
+    session = Session(engine)
+
+    temp_result = session.query(func.min(Measurement.tobs), func.avg(Measurement.tobs), func.max(Measurement.tobs)).\
+    filter(Measurement.date >= start).all()
+
+    session.close()
+
+    temp_result2 = list(np.ravel(temp_result))
+
+    return jsonify(temp_result2)
+
 @app.route("/api/v1.0/<start>/<end>")
 
 def temps(start, end):
